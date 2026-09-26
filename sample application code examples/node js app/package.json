@@ -7,8 +7,14 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  "keywords": ["movies", "tickets", "booking", "api"],
-  "author": "Your Name",
+  "keywords": [
+    "movies",
+    "tickets",
+    "booking",
+    "api",
+    "express"
+  ],
+  "author": "pushpa",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
@@ -22,3 +28,4 @@
     "node": ">=18.0.0"
   }
 }
+
