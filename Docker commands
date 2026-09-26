@@ -1,0 +1,11 @@
+//to install docker
+yum install docker -y
+systemctl status docker
+systemctl start docker
+systemctl enable docker
+
+//docker commands
+docker build -t image1:v1 .   //to create docker image
+docker images  //to check image is created or not
+docker run -d --name cont1 -p 1111:80 image1:v1 //to create container
+docker ps //to check container list
