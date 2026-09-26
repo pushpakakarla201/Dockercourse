@@ -1,0 +1,9 @@
+FROM node
+EXPOSE 3000
+MAINTAINER pushpa
+LABEL this is our image
+WORKDIR /myapp
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["node","index.js"]
