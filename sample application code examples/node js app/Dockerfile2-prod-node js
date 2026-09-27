@@ -1,0 +1,29 @@
+# Use Node.js version 22 with Alpine Linux
+FROM node:22-alpine
+
+# Application uses port 80
+EXPOSE 80
+
+# Person who maintains this Docker image
+LABEL maintainer="pushpa"
+
+# Description of the Docker image
+LABEL description="This is our Node.js application image"
+
+# Set /myapp as the working directory
+WORKDIR /myapp
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm install --production
+
+# Copy application files and give ownership to the node user
+COPY --chown=node:node . .
+
+# Run the application as the node user instead of root
+USER node
+
+# Start the Node.js application
+CMD ["node", "index.js"]
