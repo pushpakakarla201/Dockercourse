@@ -1,6 +1,18 @@
+# Use MySQL Server 5.7 as the base image
 FROM mysql/mysql-server:5.7
+
+# MySQL uses port 3306
 EXPOSE 3306
+
+# Person who maintains the image
 MAINTAINER pushpa
-LABEL this is our image
-COPY init.sql /docker-entrypoint-initdb.d
+
+# Description of the image
+LABEL description="This is our MySQL image"
+
+# Copy SQL file into the folder where MySQL automatically runs initialization scripts
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Set the MySQL root password
 ENV MYSQL_ROOT_PASSWORD=admin123
+
