@@ -1,10 +1,27 @@
-//python sample dockerfile
+# Use the official Python image
 FROM python
+
+# Our application uses port 8000
 EXPOSE 8000
+
+# Person who maintains the image
 MAINTAINER pushpa
-LABEL this is our httpd image
+
+# Description of the image
+LABEL description="This is our Python application image"
+
+# Set /myapp as the working directory
 WORKDIR /myapp
+
+# Copy requirements.txt into /myapp
 COPY requirements.txt .
+
+# Install all Python packages listed in requirements.txt
 RUN pip install -r requirements.txt
+
+# Copy all application files into /myapp
 COPY . .
-CMD ["python","app.py"]
+
+# Start the Python application
+CMD ["python", "app.py"]
+
