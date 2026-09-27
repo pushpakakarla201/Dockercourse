@@ -1,0 +1,29 @@
+# Use Apache HTTP Server 2.4 with Alpine Linux
+FROM httpd:2.4-alpine
+
+# Apache uses port 80
+EXPOSE 80
+
+# Person who maintains this Docker image
+LABEL maintainer="pushpa"
+
+# Description of the Docker image
+LABEL description="This is our Apache HTTPD image"
+
+# Remove the default Apache web page
+RUN rm -rf /usr/local/apache2/htdocs/*
+
+# Copy our website into Apache's web folder
+COPY index.html /usr/local/apache2/htdocs/
+
+# Create a normal user called devops
+RUN adduser -D devops
+
+# Give the devops user ownership of the website files
+RUN chown -R devops:devops /usr/local/apache2/htdocs
+
+# Run Apache as the devops user
+USER devops
+
+# Start Apache and keep it running
+CMD ["httpd-foreground"]
