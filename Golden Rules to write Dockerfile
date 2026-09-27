@@ -1,0 +1,21 @@
+1. Use supported base images
+→ Start with an official and trusted image, such as python, node, or ubuntu.
+2. Use Alpine / Slim / Distroless when suitable
+→ Choose smaller images when possible. Smaller image = less storage and faster deployment.
+3. Use multi-stage builds
+→ Use one stage to build your application and another small stage to run it. This keeps the final image small.
+4. Don’t run as root
+→ Run your application as a normal user, not the administrator (root). This improves security.
+5. Don’t store secrets in Dockerfile
+→ Never put passwords, API keys, or tokens directly in the Dockerfile.
+6. Use .dockerignore
+→ Tell Docker which unnecessary files to ignore when building the image.
+7. Pin application dependencies
+→ Specify exact versions of libraries/packages.
+Example: Flask==3.0.0 instead of just Flask.
+8. Don’t install unnecessary packages
+→ Install only what your application actually needs. This keeps the image smaller and safer.
+9. Don’t use latest in production
+→ Avoid python:latest, for example. Use a specific version such as python:3.12.
+10. Scan the image with Trivy
+→ Use Trivy to check your Docker image for security vulnerabilities before deploying it.
