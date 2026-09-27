@@ -1,0 +1,26 @@
+# Use Nginx with Alpine Linux as the base image
+FROM nginx:alpine
+
+# Tell Docker that Nginx uses port 80
+EXPOSE 80
+
+# Specify the person who maintains this Docker image
+LABEL maintainer="pushpa"
+
+# Give a description of the Docker image
+LABEL description="This is our Nginx image"
+
+# Remove the default Nginx website
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy our index.html website into the Nginx web folder
+COPY index.html /usr/share/nginx/html/
+
+# Give ownership of the website files to the nginx user
+RUN chown -R nginx:nginx /usr/share/nginx/html/
+
+# Run the container as the nginx user instead of root
+USER nginx
+
+# Start Nginx and keep it running
+CMD ["nginx", "-g", "daemon off;"]
