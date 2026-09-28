@@ -1,0 +1,151 @@
+# ============================================================
+# MULTI-STAGE DOCKERFILE
+# 3 Stages: Dependencies → Build → Production
+# ============================================================
+
+
+# ============================================================
+# STAGE 1: DEPENDENCIES
+# ============================================================
+
+FROM node:22-alpine AS dependencies
+# FROM       → Selects the base Docker image.
+# node:22    → Uses Node.js version 22.
+# alpine     → Uses lightweight Alpine Linux.
+# AS dependencies → Gives this stage the name "dependencies".
+
+
+WORKDIR /app
+# WORKDIR → Sets the working directory inside the container.
+# /app    → All following commands work from /app.
+
+
+COPY package*.json ./
+# COPY → Copies files from the local machine into the image.
+# package*.json → Copies package.json and package-lock.json.
+# ./ → Copies them into the current /app directory.
+
+
+RUN npm ci
+# RUN → Executes a command while building the Docker image.
+# npm ci → Installs dependencies exactly according to package-lock.json.
+# Result → node_modules is created.
+
+
+
+# ============================================================
+# STAGE 2: BUILD
+# ============================================================
+
+FROM node:22-alpine AS build
+# Starts a new stage.
+# Uses Node.js 22 with Alpine Linux.
+# AS build → Names this stage "build".
+
+
+WORKDIR /app
+# Sets /app as the working directory.
+
+
+COPY --from=dependencies /app/node_modules ./node_modules
+# COPY --from=dependencies
+# → Takes files from the "dependencies" stage.
+#
+# /app/node_modules
+# → Source location in the dependencies stage.
+#
+# ./node_modules
+# → Destination inside the build stage.
+#
+# In simple words:
+# Take node_modules from Stage 1 and put it into Stage 2.
+
+
+COPY . .
+# Copies all application source files into /app.
+
+
+RUN npm run build
+# Runs the application's build command.
+#
+# Example:
+#
+# TypeScript source
+#       ↓
+# npm run build
+#       ↓
+# dist/server.js
+#
+# The build output is normally placed in the dist directory.
+
+
+
+# ============================================================
+# STAGE 3: PRODUCTION
+# ============================================================
+
+FROM node:22-alpine AS prod
+# Starts the final production stage.
+# Uses Node.js 22 with lightweight Alpine Linux.
+# AS prod → Names this stage "prod".
+
+
+WORKDIR /app
+# Sets /app as the working directory.
+
+
+COPY package*.json ./
+# Copies package.json and package-lock.json
+# into the production image.
+
+
+RUN npm ci --omit=dev
+# Installs production dependencies only.
+#
+# --omit=dev
+# → Does NOT install development dependencies.
+#
+# This helps keep the production image smaller.
+
+
+COPY --from=build /app/dist ./dist
+# Takes the built "dist" directory from the build stage.
+#
+# Source:
+# /app/dist in the build stage
+#
+# Destination:
+# ./dist in the production stage.
+#
+# Only the required build output is copied.
+
+
+
+# ============================================================
+# PRODUCTION SETTINGS
+# ============================================================
+
+EXPOSE 3000
+# EXPOSE → Documents the port used by the application.
+# 3000   → Application is expected to listen on port 3000.
+
+
+USER node
+# Runs the application as the "node" user
+# instead of the root user.
+#
+# This is better for container security.
+
+
+CMD ["node", "dist/server.js"]
+# CMD → Defines the command executed when the container starts.
+#
+# node
+# → Starts Node.js.
+#
+# dist/server.js
+# → Runs the application's server file.
+
+
+
+ION
