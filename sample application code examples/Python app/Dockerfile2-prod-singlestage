@@ -1,0 +1,37 @@
+# Use Python 3.12 with the smaller Debian Slim image
+FROM python:3.12-slim
+
+# Don't create .pyc files
+# Show Python logs immediately
+# Don't keep pip's download cache
+# PYTHONDONTWRITEBYTECODE=1-->Prevents Python from creating .pyc files, PYTHONUNBUFFERED=1 -->Makes Python logs appear immediately,  PIP_NO_CACHE_DIR=1--> Prevents pip from keeping downloaded packages..
+ENV PYTHONDONTWRITEBYTECODE=1 \   
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+# Set the application directory
+WORKDIR /app
+
+# Copy the Python dependency file
+COPY req.txt .
+
+# Install all required Python packages
+RUN pip install --no-cache-dir -r req.txt
+
+# Copy application files and give ownership to user ID 10001
+COPY --chown=10001:10001 . .
+
+# Create a non-root user with ID 10001
+RUN useradd \
+    --uid 10001 \
+    --create-home \
+    appuser
+
+# Run the application as user 10001 instead of root
+USER 10001
+
+# Application uses port 8000
+EXPOSE 8000
+
+# Start the application using Gunicorn, Runs the Python web application using a production WSGI server.
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
