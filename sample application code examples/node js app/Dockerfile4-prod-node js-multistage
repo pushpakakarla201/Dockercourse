@@ -121,10 +121,6 @@ COPY --from=build /app/dist ./dist
 
 
 
-# ============================================================
-# PRODUCTION SETTINGS
-# ============================================================
-
 EXPOSE 3000
 # EXPOSE → Documents the port used by the application.
 # 3000   → Application is expected to listen on port 3000.
@@ -148,4 +144,4 @@ CMD ["node", "dist/server.js"]
 
 
 
-ION
+
